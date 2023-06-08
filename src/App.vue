@@ -1,7 +1,7 @@
 <template>
   <h1>Fractureiser Web Jar Scanner</h1>
   <div style="margin-bottom: 20px; font-weight: bold">
-    Made by douira, based on
+    Made by <a href="https://github.com/douira/fractureiser-web-detector">douira</a>, based on
     <a href="https://github.com/MCRcortex/nekodetector">nekodetector</a> by
     cortex et al.
   </div>
