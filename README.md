@@ -6,7 +6,7 @@ https://douira.github.io/fractureiser-web-detector/
 
 Made by [douira](https://github.com/douira), based on [nekodetector](https://github.com/MCRcortex/nekodetector) by cortex et al. Uses [java-class-tools](https://github.com/leonardosnt/java-class-tools) to parse Java class files in JS and [mdiff](https://github.com/tapirdata/mdiff) for matching bytecode sequences after preprocessing.
 
-Detects the [fractureiser](https://github.com/fractureiser-investigation/fractureiser) malware in .jar files that you give it.
+Detects the [fractureiser](https://github.com/fractureiser-investigation/fractureiser) malware in .jar or .class files that you give it.
 
 This tool works by looking for specific sequences of bytecodes within the class files. Be aware of false positives (it's possible but unlikely that a class file contains the same bytecode sequence as this tool is looking for) and false negatives (it's possible that a class file is infected but doesn't contain the same bytecode sequence as this tool is looking for).
 
