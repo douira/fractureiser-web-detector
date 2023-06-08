@@ -1,18 +1,19 @@
-# Vue 3 + TypeScript + Vite
+# Fractureiser Web Detector
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Made by [douira](https://github.com/douira), based on [nekodetector](https://github.com/MCRcortex/nekodetector) by cortex et al. Uses [java-class-tools](https://github.com/leonardosnt/java-class-tools) to parse Java class files in JS and [mdiff](https://github.com/tapirdata/mdiff) for matching bytecode sequences after preprocessing.
 
-## Recommended IDE Setup
+Detects the [fractureiser](https://github.com/fractureiser-investigation/fractureiser) malware in .jar files that you give it.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+This tool works by looking for specific sequences of bytecodes within the class files. Be aware of false positives (it's possible but unlikely that a class file contains the same bytecode sequence as this tool is looking for) and false negatives (it's possible that a class file is infected but doesn't contain the same bytecode sequence as this tool is looking for).
 
-## Type Support For `.vue` Imports in TS
+## Scope
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+The purpose of this tool is to allow users to detect if their files are infected with known signatures of the malware without needing to download and execute a program. It also avoids needing to host infrastructure and stays available independent of third-party infrastructure. Being hosted on GitHub Pages provides reasonable reliability.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Known Problems
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+Some class files can't be properly read by the class parser library. It also appears the class files with the malicious payload are the ones that can't be parsed. This may be intentional obfuscation by the author of the malware or a coincidental bug in the class parser library. Pull Requests to resolve this issue are welcome.
+
+## License
+
+Due to the nature of this being a malware detection tool, the permissive MIT license is applied. The only requirement is that you include the copyright notice and the license text as described in [the license file](./LICENSE).
