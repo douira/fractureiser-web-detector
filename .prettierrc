@@ -1,0 +1,8 @@
+{
+  "arrowParens": "avoid",
+  "printWidth": 80,
+  "requireConfig": false,
+  "semi": false,
+  "trailingComma": "es5",
+  "useTabs": false
+}
