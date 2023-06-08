@@ -41,7 +41,7 @@ const signaturesRaw: RawSignature[] = [
     instructions: [
       [Opcode.INVOKESTATIC, "java/lang/Runtime", "getRuntime", "()Ljava/lang/Runtime;"],
       [Opcode.INVOKESTATIC, "java/util/Base64", "getDecoder", "()Ljava/util/Base64$Decoder;"],
-      [Opcode.INVOKEVIRTUAL, "java/lang/String", "INVOKEVIRTUAL", "(Ljava/lang/String;)Ljava/lang/String;"], //TODO:FIXME: this might not be in all of them
+      [Opcode.INVOKEVIRTUAL, "java/lang/String", "concat", "(Ljava/lang/String;)Ljava/lang/String;"], //TODO:FIXME: this might not be in all of them
       [Opcode.INVOKEVIRTUAL, "java/util/Base64$Decoder", "decode", "(Ljava/lang/String;)[B"],
       [Opcode.INVOKESPECIAL, "java/lang/String", "<init>", "([B)V"],
       [Opcode.INVOKEVIRTUAL, "java/io/File", "getPath", "()Ljava/lang/String;"],
@@ -112,5 +112,5 @@ const signaturesRaw: RawSignature[] = [
 
 export const signatures: Signature[] = signaturesRaw.map(sig => ({
   ...sig,
-  opcodes: sig.opcodes == null ? null : new Set(sig.instructions.map(i => i[0])),
+  opcodes: sig.opcodes === null ? null : new Set(sig.instructions.map(i => i[0])),
 }))
