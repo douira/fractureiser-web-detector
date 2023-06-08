@@ -5,6 +5,10 @@
   "main": "index.js",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:douira/fractureiser-web-detector.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
