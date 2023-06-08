@@ -290,8 +290,6 @@ const processClass = async (
       instruction => resolveInstruction(instruction, classFile.constant_pool)
     )
 
-    // console.log(instructions)
-
     for (const sig of signatures) {
       const sigInstructions = sig.instructions
       if (sigInstructions.length > instructions.length) {
@@ -309,6 +307,11 @@ const processClass = async (
         continue
       }
 
+      // console.log(sig.name)
+      // console.log(sig.opcodes)
+      // console.log(sigInstructions)
+      // console.log(localInstructions)
+
       // look for signature in local instructions at any offset
       for (
         let offset = 0;
@@ -317,9 +320,27 @@ const processClass = async (
       ) {
         // start looking for signature at offset in local instructions
         let mismatches = 0
+        let localOffset = offset
         for (let i = 0; i < sigInstructions.length; i++) {
           const sigInstruction = sigInstructions[i]
-          const localInstruction = localInstructions[offset + i]
+
+          // find next local instruction with the same opcode
+          let localInstruction: InlineInstruction
+          do {
+            localInstruction = localInstructions[localOffset + i]
+          } while (
+            localInstruction !== undefined &&
+            localInstruction[0] !== sigInstruction[0] &&
+            ++localOffset
+          )
+
+          if (localInstruction === undefined) {
+            mismatches++
+            if (mismatches > options.maxDistance) {
+              break
+            }
+            continue
+          }
 
           // match instructions
           let instructionMismatch = false
@@ -343,18 +364,17 @@ const processClass = async (
 
         // found match
         if (mismatches <= options.maxDistance) {
-          const match = {
-            method: methodName,
-            signature: sig,
-            offset,
-            distance: mismatches,
-          }
           info.status = "infected"
           if (info.status === "infected") {
             if (info.matches === undefined) {
               info.matches = []
             }
-            info.matches.push(match)
+            info.matches.push({
+              method: methodName,
+              signature: sig,
+              offset,
+              distance: mismatches,
+            })
           }
 
           // stop looking for this signature in this method
