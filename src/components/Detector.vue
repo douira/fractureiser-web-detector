@@ -17,9 +17,20 @@
       <template v-else-if="displayMode === 1">Clean classes hidden</template>
       <template v-else>Only problems shown</template>
     </button>
-    <div style="margin-top: 10px">
+    <div v-if="showMatchLooseness" style="margin-top: 10px">
+      <p style="max-width: 800px; margin-bottom: 10px">
+        Using a nonzero looseness enables finding imperfect matches with the
+        signatures. Such results are usually false positive detections but may
+        be interesting in the case of obfuscation. Additionally, matches may be
+        reported with a higher distance than necessary.
+      </p>
       Match looseness (edit distance):
       <input v-model="maxDistance" type="number" />
+    </div>
+    <div v-else style="margin-top: 10px">
+      <a @click="showMatchLooseness = true" style="cursor: pointer">
+        Adjust match looseness (advanced)
+      </a>
     </div>
   </div>
   <h4 :class="{ [globalStatus]: true }">Status: {{ globalStatus }}</h4>
@@ -61,7 +72,7 @@
                   <span :class="{ distance: match.distance > 0 }">
                     Distance {{ match.distance }},
                   </span>
-                     <span>
+                  <span>
                     Instruction offset
                     {{ match.offset }}
                   </span>
@@ -83,6 +94,7 @@ import { combineRank } from "../lib/util.js"
 const globalStatus = ref<FileStatus | string>("idle")
 const displayMode = ref(2)
 const maxDistance = ref(0)
+const showMatchLooseness = ref(false)
 
 const files = reactive<FileInfo[]>([])
 
