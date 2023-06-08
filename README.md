@@ -1,5 +1,9 @@
 # Fractureiser Web Detector
 
+https://douira.github.io/fractureiser-web-detector/
+
+## About
+
 Made by [douira](https://github.com/douira), based on [nekodetector](https://github.com/MCRcortex/nekodetector) by cortex et al. Uses [java-class-tools](https://github.com/leonardosnt/java-class-tools) to parse Java class files in JS and [mdiff](https://github.com/tapirdata/mdiff) for matching bytecode sequences after preprocessing.
 
 Detects the [fractureiser](https://github.com/fractureiser-investigation/fractureiser) malware in .jar files that you give it.

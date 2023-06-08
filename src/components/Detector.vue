@@ -1,5 +1,12 @@
 <template>
-  <input type="file" @change="onFileChange" accept=".jar,.class" multiple />
+  Select .class and .jar files to scan:<br />
+  <input
+    type="file"
+    @change="onFileChange"
+    accept=".jar,.class"
+    multiple
+    style="padding-left: 80px"
+  />
   <div style="margin-top: 20px">
     <button @click="run">Scan</button>
     <button
