@@ -59,7 +59,11 @@
                   signature <samp>{{ match.signature.name }}</samp
                   >.
                   <span :class="{ distance: match.distance > 0 }">
-                    Distance {{ match.distance }}
+                    Distance {{ match.distance }},
+                  </span>
+                     <span>
+                    Instruction offset
+                    {{ match.offset }}
                   </span>
                 </li>
               </ul>

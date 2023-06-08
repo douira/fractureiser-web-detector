@@ -13,7 +13,6 @@ import {
   Opcode,
   Utf8Info,
 } from "java-class-tools"
-import mdiff from "mdiff"
 import { Signature, signatures } from "./signatures.ts"
 import { combineRank } from "./util.ts"
 
@@ -51,13 +50,15 @@ export type FileInfo = {
 )
 export type FileStatus = FileInfo["status"]
 
-
 export interface DetectionOptions {
   // maximum allowed edit distance between the instructions and the signature
   maxDistance: number
 }
 
-export const detect = async (info: FileInfo, options: DetectionOptions): Promise<void> => {
+export const detect = async (
+  info: FileInfo,
+  options: DetectionOptions
+): Promise<void> => {
   info.status = "loading"
   // check if .jar or .class
   if (info.file === undefined) {
@@ -250,6 +251,7 @@ const constantResolvers: Partial<
 interface Match {
   method: string
   signature: Signature
+  offset: number
   distance: number
 }
 
@@ -291,54 +293,72 @@ const processClass = async (
     // console.log(instructions)
 
     for (const sig of signatures) {
-      if (sig.instructions.length > instructions.length) {
+      const sigInstructions = sig.instructions
+      if (sigInstructions.length > instructions.length) {
         continue
       }
 
-      // generate local instruction array filted to the opcodes used by this signature
+      // generate local instruction array filtered to the opcodes used by this signature
       const localInstructions = instructions.filter(
-        instruction => instruction[0] !== -1 && sig.opcodes.has(instruction[0])
+        instruction =>
+          instruction[0] !== -1 &&
+          (sig.opcodes == null || sig.opcodes.has(instruction[0]))
       )
 
-      // check if there is a common subsequence of instructions and signature
-      const diff = mdiff(sig.instructions, localInstructions, {
-        // equal if all items are equal
-        equal: (a, b) => {
-          if (a.length !== b.length) {
-            return false
-          }
-          for (let i = 0; i < a.length; i++) {
-            if (a[i] !== b[i]) {
-              return false
-            }
-          }
-          return true
-        },
-      })
-
-      // find edit distance
-      const diffDistance = diff.scanCommon()
-      if (diffDistance === null) {
+      if (sigInstructions.length > localInstructions.length) {
         continue
       }
-      // console.log(localInstructions.length, sig.instructions.length, distance)
 
-      // calculate the distance of a sequence in which the signature is a subsequence
-      const exactMatchDistance =
-        localInstructions.length - sig.instructions.length
-      const signatureDifference = diffDistance - exactMatchDistance
-      if (signatureDifference <= options.maxDistance) {
-        const match = {
-          method: methodName,
-          signature: sig,
-          distance: signatureDifference,
-        }
-        info.status = "infected"
-        if (info.status === "infected") {
-          if (info.matches === undefined) {
-            info.matches = []
+      // look for signature in local instructions at any offset
+      for (
+        let offset = 0;
+        offset < localInstructions.length - sigInstructions.length;
+        offset++
+      ) {
+        // start looking for signature at offset in local instructions
+        let mismatches = 0
+        for (let i = 0; i < sigInstructions.length; i++) {
+          const sigInstruction = sigInstructions[i]
+          const localInstruction = localInstructions[offset + i]
+
+          // match instructions
+          let instructionMismatch = false
+          if (sigInstruction.length !== localInstruction.length) {
+            instructionMismatch = true
+          } else {
+            for (let j = 0; j < sigInstruction.length; j++) {
+              if (sigInstruction[j] !== localInstruction[j]) {
+                instructionMismatch = true
+                break
+              }
+            }
           }
-          info.matches.push(match)
+          if (instructionMismatch) {
+            mismatches++
+            if (mismatches > options.maxDistance) {
+              break
+            }
+          }
+        }
+
+        // found match
+        if (mismatches <= options.maxDistance) {
+          const match = {
+            method: methodName,
+            signature: sig,
+            offset,
+            distance: mismatches,
+          }
+          info.status = "infected"
+          if (info.status === "infected") {
+            if (info.matches === undefined) {
+              info.matches = []
+            }
+            info.matches.push(match)
+          }
+
+          // stop looking for this signature in this method
+          break
         }
       }
     }

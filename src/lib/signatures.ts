@@ -1,16 +1,17 @@
 import { Opcode } from "java-class-tools"
-import type { InlineInstruction,RawInlineInstruction } from "./detect.ts"
+import type { InlineInstruction, RawInlineInstruction } from "./detect.ts"
 
 export interface Signature {
   name: string
-	instructions: InlineInstruction[]
-	opcodes: Set<Opcode>
+  instructions: InlineInstruction[]
+  opcodes: null | Set<Opcode>
 }
 
 // https://github.com/MCRcortex/nekodetector/blob/6afbe30dc3046b65de9c6ba6cde8ecb59a79ca8b/src/main/java/me/cortex/jarscanner/Detector.java
 type RawSignature = {
-	name: string
-	instructions: RawInlineInstruction[]
+  name: string
+  instructions: RawInlineInstruction[]
+  opcodes?: null
 }
 const signaturesRaw: RawSignature[] = [
   {
@@ -32,7 +33,7 @@ const signaturesRaw: RawSignature[] = [
       [Opcode.INVOKESPECIAL, "java/lang/String", "<init>", "([B)V"],
       [Opcode.INVOKEVIRTUAL, "java/lang/Class", "getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;"],
       [Opcode.INVOKEVIRTUAL, "java/lang/reflect/Method", "invoke", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;"],
-		]
+		],
   },
   {
     name: "sig2",
@@ -46,8 +47,8 @@ const signaturesRaw: RawSignature[] = [
       [Opcode.INVOKEVIRTUAL, "java/io/File", "getPath", "()Ljava/lang/String;"],
       [Opcode.INVOKEVIRTUAL, "java/lang/Runtime", "exec", "([Ljava/lang/String;)Ljava/lang/Process;"],
     ],
-	},
-	  {
+  },
+  {
     name: "sig3-ip",
     // prettier-ignore
     instructions: [
@@ -104,11 +105,12 @@ const signaturesRaw: RawSignature[] = [
       [Opcode.DUP],
       [Opcode.BIPUSH, 13],
       [Opcode.BIPUSH, 48]
-    ],
+			],
+    opcodes: null, // don't filter
   },
 ]
 
-export const signatures: Signature[] = signaturesRaw.map((sig) => ({
-	...sig,
-	opcodes: new Set(sig.instructions.map((i) => i[0])),
+export const signatures: Signature[] = signaturesRaw.map(sig => ({
+  ...sig,
+  opcodes: sig.opcodes == null ? null : new Set(sig.instructions.map(i => i[0])),
 }))
