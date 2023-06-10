@@ -21,3 +21,18 @@ Some class files can't be properly read by the class parser library. It also app
 ## License
 
 Due to the nature of this being a malware detection tool, the permissive MIT license is applied. The only requirement is that you include the copyright notice and the license text as described in [the license file](./LICENSE).
+
+## How To Run
+
+This project is a Vue.js application. Any knowledge about Vue.js should apply here
+
+If anyone wants to run the webserver locally, e.g. for development purposes, they will require nodejs.
+
+After cloning and entering the project folder, the following commands will import the dependencies
+```CMD
+npm install
+```
+and start the app.
+```CMD
+npm run dev
+```
