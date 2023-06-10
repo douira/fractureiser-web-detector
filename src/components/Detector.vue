@@ -116,14 +116,23 @@ const run = async () => {
     return
   }
   globalStatus.value = "loading & scanning"
-  await Promise.all(
-    Array.from(files).map(async info => {
-      await detect(info, {
-        maxDistance: maxDistance.value,
-      })
-      globalStatus.value = combineRank(globalStatus.value, info.status)
+  let fileSlices = new Array(window.navigator.hardwareConcurrency)
+  const middleIndex = Math.ceil(files.length / fileSlices.length);
+  for (let i = 0; i < fileSlices.length; i++) {
+    fileSlices[i] = files.slice(middleIndex*i, middleIndex*(i+1));
+  }
+  for (let i = 0; i < fileSlices.length; i++) {
+    new Promise(async _ => {
+      for await (let info of fileSlices[i]) {
+        await detect(info, {
+          maxDistance: maxDistance.value,
+        })
+        globalStatus.value = combineRank(globalStatus.value, info.status)
+      }
+      console.log("finished " + i)
     })
-  )
+    console.log("started " + i)
+  }
 }
 </script>
 
