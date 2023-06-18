@@ -96,6 +96,12 @@ const displayMode = ref(2)
 const maxDistance = ref(0)
 const showMatchLooseness = ref(false)
 
+// TODO: this is not an optimal way to fix the problem that it gets stuck scanning many files.
+// See issue https://github.com/douira/fractureiser-web-detector/issues/4 and my comments on
+// the PR that added this slicing code https://github.com/douira/fractureiser-web-detector/pull/7#issuecomment-1585707186
+// TLDR: this is not how you parallelize things in JS but it does appear to work.
+// it's unclear why it works, potentially because of the ZIP library, or something else
+// being overloaded. (the ZIP library apparently does have a thread pool though)
 const files = reactive<FileInfo[]>([])
 
 const onFileChange = (e: Event) => {
