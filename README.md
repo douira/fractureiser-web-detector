@@ -1,5 +1,7 @@
 # Fractureiser Web Detector
 
+The situation has evolved since this proejct was written and I currently don't have time to keep up with MMPA or other Minecraft-related security developments. There's been efforts to streamline and vastly expand virus scanning alongside other measures. I will only be merging trivially reviewable commits. Feel free to maintain a fork and contact me about it so that I can post it here.
+
 https://douira.github.io/fractureiser-web-detector/
 
 ## About
