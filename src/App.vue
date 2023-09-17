@@ -9,7 +9,7 @@
   </div>
   <div style="margin-bottom: 20px; max-width: 800px">
     This tool works by looking for specific sequences of bytecodes within the
-    class files. The files are scannend <i>locally</i> in your browser with
+    class files. The files are scanned <i>locally</i> in your browser with
     JavaScript and aren't sent to a remove server.
   </div>
   <div style="margin-bottom: 20px; max-width: 800px">
